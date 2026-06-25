@@ -66,14 +66,13 @@ def main():
 
     # Build model (use the DeFTBackbone for a clean standalone architecture)
     print(f"Loading backbone from {ckpt} ...")
-    backbone = DeFTBackbone(in_channels=1, out_channels=64)
+    backbone = DeFTBackbone.from_pretrained(ckpt)
     model = DeFT(denoiser=backbone)
     model.to(args.device)
     noisy = noisy.to(args.device)
 
     print(f"Adapting to {args.input} (shape {list(noisy.shape)}, device={args.device}) ...")
-    with torch.no_grad():
-        denoised = model.adapt(noisy, steps=5)
+    denoised = model.adapt(noisy, steps=5)
 
     # Save output
     out = denoised.squeeze().cpu().numpy()

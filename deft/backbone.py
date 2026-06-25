@@ -3,6 +3,7 @@ backbone in Descriptor-Forked Test-Time Adaptation (DeFT)."""
 
 import torch
 import torch.nn as nn
+from pathlib import Path
 
 
 class _DoubleConv(nn.Module):
@@ -52,16 +53,30 @@ class _UpDecoder(nn.Module):
 
     def forward(self, x1, x2):
         x1 = self.up(x1)
-        # With power-of-two input (e.g. 512x512), spatial dimensions are
-        # naturally aligned -- no dynamic padding needed.
-        # To support arbitrary sizes, uncomment the following:
-        # diffY = x2.size()[2] - x1.size()[2]
-        # diffX = x2.size()[3] - x1.size()[3]
-        # if diffY != 0 or diffX != 0:
-        #     x1 = F.pad(x1, [diffX // 2, diffX - diffX // 2,
-        #                     diffY // 2, diffY - diffY // 2])
         x = torch.cat([x2, x1], dim=1)
         return self.conv(x)
+
+
+# Mapping from original DANRFUNet / JointUNetMIM module names to
+# DeFTBackbone names.  Checkpoints produced by the source pretraining
+# pipeline store weights under these original names.
+#
+# body_outc (64→64) is the U-Net body's internal output projection;
+# head_denoise (64→1) is the final denoising head.  In DeFTBackbone
+# these are collapsed into a single output_conv (64→1).
+_KEY_MAP = {
+    'inc.':           'input_conv.',
+    'down1.':         'encoder1.',
+    'down2.':         'encoder2.',
+    'down3.':         'encoder3.',
+    'down4.':         'encoder4.',
+    'up1.':           'decoder1.',
+    'up2.':           'decoder2.',
+    'up3.':           'decoder3.',
+    'up4.':           'decoder4.',
+    'head_denoise.':  'output_conv.',
+}
+_SKIP_PREFIXES = ('head_mim', 'unet_body.outc')
 
 
 class DeFTBackbone(nn.Module):
@@ -72,7 +87,7 @@ class DeFTBackbone(nn.Module):
     Channel progression: (64, 128, 256, 512, 1024).
     """
 
-    def __init__(self, in_channels=1, out_channels=64):
+    def __init__(self, in_channels=1, out_channels=1):
         super().__init__()
         self.input_conv = _DoubleConv(in_channels, 64)
         self.encoder1 = _DownEncoder(64, 128)
@@ -84,6 +99,52 @@ class DeFTBackbone(nn.Module):
         self.decoder3 = _UpDecoder(256, 128)
         self.decoder4 = _UpDecoder(128, 64)
         self.output_conv = nn.Conv2d(64, out_channels, kernel_size=1)
+
+    @classmethod
+    def from_pretrained(cls, checkpoint_path):
+        """Load pretrained weights from a source-domain checkpoint.
+
+        The source pretraining pipeline saves weights under the original
+        DANRFUNet / JointUNetMIM module names (``down4``, ``up1``,
+        ``outc``, etc.).  This method handles the key mapping transparently
+        so callers never need to know the original naming.
+
+        Args:
+            checkpoint_path: Path to a ``.pt`` checkpoint produced by the
+                source pretraining pipeline.
+
+        Returns:
+            DeFTBackbone instance with pretrained weights loaded.
+        """
+        ckpt = torch.load(checkpoint_path, map_location='cpu',
+                          weights_only=False)
+        state = ckpt.get('state_dict', ckpt.get('model_state_dict', ckpt))
+
+        # Strip common wrapper prefixes, then map old → new names.
+        mapped = {}
+        skipped = 0
+        for key, value in state.items():
+            k = key.replace('_orig_mod.', '').replace('unet_body.', '').replace('denoiser.', '')
+            # Discard auxiliary heads (not used in TTA).
+            if any(k.startswith(p) for p in _SKIP_PREFIXES):
+                skipped += 1
+                continue
+            for old_prefix, new_prefix in _KEY_MAP.items():
+                if k.startswith(old_prefix):
+                    k = new_prefix + k[len(old_prefix):]
+                    break
+            mapped[k] = value
+
+        model = cls(in_channels=1, out_channels=1)
+        missing, unexpected = model.load_state_dict(mapped, strict=False)
+        if skipped:
+            print(f"  (skipped {skipped} MIM-head keys)")
+        if missing:
+            print(f"  Note: {len(missing)} key(s) not found in checkpoint (OK for partial load)")
+        if unexpected:
+            print(f"  Note: {len(unexpected)} unexpected key(s) (ignored)")
+        print(f"  Loaded {len(mapped) - skipped} of {len(state)} keys")
+        return model
 
     def forward(self, x, return_bottleneck=False):
         x1 = self.input_conv(x)
