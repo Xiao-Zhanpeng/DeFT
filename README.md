@@ -2,7 +2,10 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![PyTorch 2.x](https://img.shields.io/badge/PyTorch-2.x-ee4c2c.svg)](https://pytorch.org/)
+[![PyTorch 2.4](https://img.shields.io/badge/PyTorch-2.4-ee4c2c.svg)](https://pytorch.org/)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97-HuggingFace-orange.svg)](https://huggingface.co/Lockbro/deft-checkpoints)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb)
+<!-- [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
 
 <!--
 ### 🗞️ News
@@ -13,8 +16,6 @@
 ## 🏥 Overview
 
 > DeFT (Descriptor-Forked Test-Time Adaptation) is a source-free, single-image test-time adaptation method for medical image denoising under domain shift. A shared degradation descriptor, extracted once per test image, forks into three complementary projections: **DCI** exposes the read-only conditioning interface, **PRM** performs polarized dual-route spatial routing between aggressive denoising and structure preservation, and **DCS** maps the same descriptor to an image-specific update schedule. The backbone remains frozen throughout; only lightweight episodic state (<1M parameters) is optimized per image.
-
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb)
 
 ---
 
@@ -139,8 +140,7 @@ deft-open-source/
 │   └── loss.py            # Neighbor2Neighbor + Charbonnier
 ├── examples/              # Sample images for Quick Start
 ├── check_env.py           # Environment checker
-├── requirements-minimal.txt
-├── requirements-full.txt
+├── requirements.txt
 ├── scripts/               # One-click run scripts
 └── checkpoints/           # Download checkpoints here
 ```
