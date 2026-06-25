@@ -1,0 +1,7 @@
+# DeFT — Minimal inference-only requirements
+torch>=2.0.0
+numpy>=1.23,<2.0
+scipy>=1.10.0
+scikit-image>=0.20.0
+monai>=1.3.0
+tqdm>=4.64.0
