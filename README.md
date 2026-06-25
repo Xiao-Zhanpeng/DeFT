@@ -140,7 +140,8 @@ deft-open-source/
 │   └── loss.py            # Neighbor2Neighbor + Charbonnier
 ├── examples/              # Sample images for Quick Start
 ├── check_env.py           # Environment checker
-├── requirements.txt
+├── environment.yaml        # Conda environment (mamba preferred)
+├── requirements.txt        # pip fallback
 ├── scripts/               # One-click run scripts
 └── checkpoints/           # Download checkpoints here
 ```
