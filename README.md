@@ -101,15 +101,15 @@ python tools/auto_build_datasets.py --raw-root raw_medical_datasets --out-root p
 
 | File | Method | Size | Download |
 |------|--------|------|----------|
-| `unet_source_checkpoint.pt` | DeFT backbone (source pretrained) | ~356 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `swinir_checkpoint.pt` | SwinIR | ~422 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `restormer_checkpoint.pt` | Restormer | ~300 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `apbsn_checkpoint.pt` | AP-BSN | 44 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `blind2unblind_checkpoint.pt` | Blind2Unblind | 13 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `cyclegan_checkpoint.pt` | CycleGAN | ~324 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `reggan_checkpoint.pt` | RegGAN | ~332 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `unet_ctonly_checkpoint.pt` | CT-only source composition | ~356 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
-| `unet_mrionly_checkpoint.pt` | MRI-only source composition | ~356 MB | [GDrive](https://drive.google.com/uc?id=) \| [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `unet_source_checkpoint.pt` | DeFT backbone (source pretrained) | ~356 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `swinir_checkpoint.pt` | SwinIR | ~422 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `restormer_checkpoint.pt` | Restormer | ~300 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `apbsn_checkpoint.pt` | AP-BSN | 44 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `blind2unblind_checkpoint.pt` | Blind2Unblind | 13 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `cyclegan_checkpoint.pt` | CycleGAN | ~324 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `reggan_checkpoint.pt` | RegGAN | ~332 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `unet_ctonly_checkpoint.pt` | CT-only source composition | ~356 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
+| `unet_mrionly_checkpoint.pt` | MRI-only source composition | ~356 MB | [HF](https://huggingface.co/Lockbro/deft-checkpoints) |
 
 ```bash
 # Google Drive (bulk, all 9 checkpoints)
