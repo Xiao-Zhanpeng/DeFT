@@ -7,3 +7,4 @@ __pycache__/
 .nfs*
 AGENTS.md
 PROGRESS.md
+deft/conditioning.py
