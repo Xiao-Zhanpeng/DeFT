@@ -14,7 +14,7 @@
 
 > DeFT (Descriptor-Forked Test-Time Adaptation) is a source-free, single-image test-time adaptation method for medical image denoising under domain shift. A shared degradation descriptor, extracted once per test image, forks into three complementary projections: **DCI** exposes the read-only conditioning interface, **PRM** performs polarized dual-route spatial routing between aggressive denoising and structure preservation, and **DCS** maps the same descriptor to an image-specific update schedule. The backbone remains frozen throughout; only lightweight episodic state (<1M parameters) is optimized per image.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/<USER>/<REPO>/blob/main/demo.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb)
 
 ---
 
