@@ -42,7 +42,7 @@ SAMPLES = [
         "gt":    "examples/q3_gt.npy",
         "noisy": "examples/q3_noisy.npy",
         "vmin": 0.0, "vmax": 1.0,
-        "crop":  (0, -12, 12, -12),  # top, bottom, left, right
+        "crop":  (0, -12, 12, 0),  # top, bottom, left, right (Fig.6 annotation)
     },
 ]
 
@@ -56,7 +56,9 @@ def apply_crop(img, crop):
     if crop is None:
         return img
     top, bottom, left, right = crop
-    return img[top:bottom or None, left:right or None]
+    bottom = bottom if bottom else None
+    right = right if right else None
+    return img[top:bottom, left:right]
 
 
 def main():
@@ -116,21 +118,21 @@ def main():
         ax = axes[i][0]
         ax.imshow(gt_disp, cmap="gray", vmin=vmin, vmax=vmax, aspect="equal")
         if i == 0:
-            ax.set_title(col_labels[0], fontsize=11)
+            ax.set_title(col_labels[0], fontsize=11, pad=3)
         ax.axis("off")
 
         # Column 2 — Noisy
         ax = axes[i][1]
         ax.imshow(noisy_disp, cmap="gray", vmin=vmin, vmax=vmax, aspect="equal")
         if i == 0:
-            ax.set_title(col_labels[1], fontsize=11)
+            ax.set_title(col_labels[1], fontsize=11, pad=3)
         ax.axis("off")
 
         # Column 3 — DeFT Denoised
         ax = axes[i][2]
         ax.imshow(denoised_disp, cmap="gray", vmin=vmin, vmax=vmax, aspect="equal")
         if i == 0:
-            ax.set_title(col_labels[2], fontsize=11)
+            ax.set_title(col_labels[2], fontsize=11, pad=3)
         ax.axis("off")
 
         # Column 4 — Signed diff
@@ -138,7 +140,7 @@ def main():
         im = ax.imshow(diff_disp, cmap=DIFF_CMAP, vmin=-DIFF_RANGE, vmax=DIFF_RANGE,
                        aspect="equal", interpolation="nearest")
         if i == 0:
-            ax.set_title(col_labels[3], fontsize=11)
+            ax.set_title(col_labels[3], fontsize=11, pad=3)
         ax.axis("off")
 
         axes[i][0].set_ylabel(s["label"], fontsize=12, rotation=90,
@@ -149,8 +151,8 @@ def main():
 
     plt.suptitle("DeFT: Source-Free Single-Image Test-Time Adaptation",
                  fontsize=14, y=0.99)
-    plt.subplots_adjust(left=0.08, right=0.91, top=0.92, bottom=0.06,
-                        wspace=0.05, hspace=0.15)
+    plt.subplots_adjust(left=0.08, right=0.91, top=0.94, bottom=0.04,
+                        wspace=0.05, hspace=0.06)
 
     plt.savefig(OUTPUT_PNG, dpi=150, bbox_inches="tight")
     plt.show()
