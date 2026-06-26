@@ -3,6 +3,11 @@
 These are the same slices used in the paper's Fig.4 (Q1 Mayo CT),
 Fig.5 (Q2 fastMRI Knee), and Fig.6 (Q3 Chest X-ray) qualitative figures.
 
+Visual conventions mirror the paper:
+- Q1 CT: windowed to [-160, 240] HU (vmin=0.6, vmax=0.886 in normalized space)
+- Q2/Q3: normalized [0, 1] display; Q3 has a 12 px display crop
+- Diff: signed prediction−GT, RdBu_r colormap, fixed range [-0.10, +0.10]
+
 Usage (from Colab notebook — %run shares the IPython backend):
     %run run_demo.py
 """
@@ -17,30 +22,41 @@ import torch
 from deft import DeFT, DeFTBackbone
 
 
-# Locked paper cases with known ground truth (Fig.4/5/6)
 SAMPLES = [
     {
         "label": "Q1 Mayo CT ($\\sigma$=0.10)",
         "gt":    "examples/q1_gt.npy",
         "noisy": "examples/q1_noisy.npy",
-        "vmin": 0, "vmax": 1,
+        "vmin": 0.600, "vmax": 0.886,
+        "crop":  None,
     },
     {
         "label": "Q2 fastMRI Knee ($\\sigma$=0.07)",
         "gt":    "examples/q2_gt.npy",
         "noisy": "examples/q2_noisy.npy",
-        "vmin": 0, "vmax": 1,
+        "vmin": 0.0, "vmax": 1.0,
+        "crop":  None,
     },
     {
         "label": "Q3 Chest X-ray ($\\sigma$=0.10)",
         "gt":    "examples/q3_gt.npy",
         "noisy": "examples/q3_noisy.npy",
-        "vmin": 0, "vmax": 1,
+        "vmin": 0.0, "vmax": 1.0,
+        "crop":  (0, -12, 12, -12),  # top, bottom, left, right
     },
 ]
 
 CHECKPOINT = "checkpoints/unet_source_checkpoint.pt"
 OUTPUT_PNG = "deft_demo_output.png"
+DIFF_RANGE = 0.10
+DIFF_CMAP = "RdBu_r"
+
+
+def apply_crop(img, crop):
+    if crop is None:
+        return img
+    top, bottom, left, right = crop
+    return img[top:bottom or None, left:right or None]
 
 
 def main():
@@ -65,9 +81,9 @@ def main():
     model.to(device)
 
     N = len(SAMPLES)
-    fig, axes = plt.subplots(N, 4, figsize=(16, 10))
+    fig, axes = plt.subplots(N, 4, figsize=(15, 10))
 
-    col_titles = ["GT", "Noisy", "DeFT Denoised", "Residual |GT − Denoised|"]
+    col_labels = ["GT", "Noisy", "DeFT Denoised", "Signed Diff (DeFT − GT)"]
 
     for i in range(N):
         s = SAMPLES[i]
@@ -84,45 +100,52 @@ def main():
         denoised_t = model.adapt(noisy_t, steps=5)
         print("done")
 
-        denoised = denoised_t.squeeze().cpu().numpy()
+        denoised = denoised_t.squeeze().cpu().numpy().astype(np.float64)
+        gt64 = gt.astype(np.float64)
 
-        # Q1 CT: paper uses [-160,240] HU window, here normalized to [0,1]
+        signed_diff = denoised - gt64
+
         vmin, vmax = s["vmin"], s["vmax"]
 
-        # Residual (absolute error)
-        residual = np.abs(gt.astype(np.float32) - denoised.astype(np.float32))
+        gt_disp = apply_crop(gt, s["crop"])
+        noisy_disp = apply_crop(noisy, s["crop"])
+        denoised_disp = apply_crop(denoised, s["crop"])
+        diff_disp = apply_crop(signed_diff, s["crop"])
 
-        # --- Column 1: GT ---
+        # Column 1 — GT
         ax = axes[i][0]
-        ax.imshow(gt, cmap="gray", vmin=vmin, vmax=vmax)
-        ax.set_title("GT" if i == 0 else "", fontsize=11)
+        ax.imshow(gt_disp, cmap="gray", vmin=vmin, vmax=vmax, aspect="equal")
+        if i == 0:
+            ax.set_title(col_labels[0], fontsize=11)
         ax.axis("off")
 
-        # --- Column 2: Noisy ---
+        # Column 2 — Noisy
         ax = axes[i][1]
-        ax.imshow(noisy, cmap="gray", vmin=vmin, vmax=vmax)
-        ax.set_title("Noisy" if i == 0 else "", fontsize=11)
+        ax.imshow(noisy_disp, cmap="gray", vmin=vmin, vmax=vmax, aspect="equal")
+        if i == 0:
+            ax.set_title(col_labels[1], fontsize=11)
         ax.axis("off")
 
-        # --- Column 3: DeFT Denoised ---
+        # Column 3 — DeFT Denoised
         ax = axes[i][2]
-        ax.imshow(denoised, cmap="gray", vmin=vmin, vmax=vmax)
-        ax.set_title("DeFT Denoised" if i == 0 else "", fontsize=11)
+        ax.imshow(denoised_disp, cmap="gray", vmin=vmin, vmax=vmax, aspect="equal")
+        if i == 0:
+            ax.set_title(col_labels[2], fontsize=11)
         ax.axis("off")
 
-        # --- Column 4: Residual difference map ---
+        # Column 4 — Signed diff
         ax = axes[i][3]
-        im = ax.imshow(residual, cmap="inferno", vmin=0, vmax=0.15)
-        ax.set_title("Residual |GT − Denoised|" if i == 0 else "", fontsize=11)
+        im = ax.imshow(diff_disp, cmap=DIFF_CMAP, vmin=-DIFF_RANGE, vmax=DIFF_RANGE,
+                       aspect="equal", interpolation="nearest")
+        if i == 0:
+            ax.set_title(col_labels[3], fontsize=11)
         ax.axis("off")
 
-        # Domain label on the left
         axes[i][0].set_ylabel(s["label"], fontsize=12, rotation=90,
                               labelpad=10, va="center")
 
-    # Colorbar for residual column
     cbar_ax = fig.add_axes([0.92, 0.11, 0.015, 0.78])
-    fig.colorbar(im, cax=cbar_ax, label="Absolute error")
+    fig.colorbar(im, cax=cbar_ax, label="")
 
     plt.suptitle("DeFT: Source-Free Single-Image Test-Time Adaptation",
                  fontsize=14, y=0.99)

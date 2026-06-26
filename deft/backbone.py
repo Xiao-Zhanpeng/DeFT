@@ -3,7 +3,6 @@ backbone in Descriptor-Forked Test-Time Adaptation (DeFT)."""
 
 import torch
 import torch.nn as nn
-from pathlib import Path
 
 
 class _DoubleConv(nn.Module):
@@ -62,8 +61,9 @@ class _UpDecoder(nn.Module):
 # pipeline store weights under these original names.
 #
 # body_outc (64→64) is the U-Net body's internal output projection;
-# head_denoise (64→1) is the final denoising head.  In DeFTBackbone
-# these are collapsed into a single output_conv (64→1).
+# head_denoise (64→1) is the final denoising head.  Both are needed
+# for correct feature flow — skipping body_outc breaks the representation
+# chain that head_denoise expects.
 _KEY_MAP = {
     'inc.':           'input_conv.',
     'down1.':         'encoder1.',
@@ -74,9 +74,10 @@ _KEY_MAP = {
     'up2.':           'decoder2.',
     'up3.':           'decoder3.',
     'up4.':           'decoder4.',
+    'outc.':          'body_outc.',
     'head_denoise.':  'output_conv.',
 }
-_SKIP_PREFIXES = ('head_mim', 'unet_body.outc')
+_SKIP_PREFIXES = ('head_mim',)
 
 
 class DeFTBackbone(nn.Module):
@@ -98,6 +99,7 @@ class DeFTBackbone(nn.Module):
         self.decoder2 = _UpDecoder(512, 256)
         self.decoder3 = _UpDecoder(256, 128)
         self.decoder4 = _UpDecoder(128, 64)
+        self.body_outc = nn.Conv2d(64, 64, kernel_size=1)
         self.output_conv = nn.Conv2d(64, out_channels, kernel_size=1)
 
     @classmethod
@@ -138,12 +140,13 @@ class DeFTBackbone(nn.Module):
         model = cls(in_channels=1, out_channels=1)
         missing, unexpected = model.load_state_dict(mapped, strict=False)
         if skipped:
-            print(f"  (skipped {skipped} MIM-head keys)")
+            print(f"  (skipped {skipped} auxiliary-head keys)")
         if missing:
-            print(f"  Note: {len(missing)} key(s) not found in checkpoint (OK for partial load)")
+            print(f"  Note: {len(missing)} key(s) missing")
         if unexpected:
             print(f"  Note: {len(unexpected)} unexpected key(s) (ignored)")
-        print(f"  Loaded {len(mapped) - skipped} of {len(state)} keys")
+        loaded = len(state) - skipped
+        print(f"  Loaded {loaded} of {len(state)} keys")
         return model
 
     def forward(self, x, return_bottleneck=False):
@@ -156,6 +159,7 @@ class DeFTBackbone(nn.Module):
         x = self.decoder2(x, x3)
         x = self.decoder3(x, x2)
         x = self.decoder4(x, x1)
+        x = self.body_outc(x)
         out = self.output_conv(x)
         if return_bottleneck:
             return out, x5
