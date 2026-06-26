@@ -19,6 +19,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch
 
+from tqdm.auto import tqdm
+
 from deft import DeFT, DeFTBackbone
 
 
@@ -98,9 +100,15 @@ def main():
         elif noisy_t.ndim == 3:
             noisy_t = noisy_t.unsqueeze(0)
 
-        print(f"[run_demo] Adapting {s['label']} (5 steps) ...", end=" ", flush=True)
-        denoised_t = model.adapt(noisy_t, steps=5)
-        print("done")
+        print(f"[run_demo] Adapting {s['label']} ...")
+        pbar = tqdm(total=5, desc=f"  {s['label'].split('(')[0].strip()}", unit="step")
+        def _tick(step, bar=pbar):
+            if step == 0 and bar.total != model._actual_steps:
+                bar.total = model._actual_steps
+                bar.refresh()
+            bar.update(1)
+        denoised_t = model.adapt(noisy_t, steps=5, callback=_tick)
+        pbar.close()
 
         denoised = denoised_t.squeeze().cpu().numpy().astype(np.float64)
         gt64 = gt.astype(np.float64)

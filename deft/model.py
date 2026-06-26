@@ -1159,6 +1159,7 @@ class DeFT(nn.Module):
         episodic: bool = True,
         sanity_check: bool = False,
         collect_per_step: bool = False,
+        callback=None,
     ) -> torch.Tensor:
         """Test-time adaptation.
 
@@ -1169,6 +1170,7 @@ class DeFT(nn.Module):
             sanity_check: verify adaptation produces output change
             collect_per_step: save per-step inference for convergence diagnostics.
                 Results stored in self._per_step_outputs.
+            callback: optional callable(step) invoked after each adaptation step.
         """
         if episodic:
             self.reset()
@@ -1281,6 +1283,8 @@ class DeFT(nn.Module):
 
         for step in range(actual_steps):
             self._adapt_step(noisy, optimizer, step, actual_steps)
+            if callback is not None:
+                callback(step)
 
             if hasattr(self, '_last_keep_fraction'):
                 self._keep_fractions.append(self._last_keep_fraction)
