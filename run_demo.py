@@ -1,13 +1,12 @@
-"""Run DeFT on three example medical images and display results.
+"""Run DeFT on three locked evaluation cases and display GT / Noisy / Denoised / Residual.
 
-Usage:
-    python run_demo.py [--checkpoint PATH] [--device cuda|cpu]
+These are the same slices used in the paper's Fig.4 (Q1 Mayo CT),
+Fig.5 (Q2 fastMRI Knee), and Fig.6 (Q3 Chest X-ray) qualitative figures.
 
-This script is designed to be called from the Colab notebook
-(demo.ipynb) to avoid notebook-cell indentation caching issues.
+Usage (from Colab notebook — %run shares the IPython backend):
+    %run run_demo.py
 """
 
-import argparse
 import sys
 from pathlib import Path
 
@@ -18,70 +17,121 @@ import torch
 from deft import DeFT, DeFTBackbone
 
 
+# Locked paper cases with known ground truth (Fig.4/5/6)
 SAMPLES = [
-    ("Q1 Mayo CT",        "examples/q1_mayo_ct_noisy.npy",      5),
-    ("Q2 fastMRI Knee",   "examples/q2_fastmri_knee_noisy.npy", 5),
-    ("Q3 Chest X-ray",    "examples/q3_chest_xray_noisy.npy",   5),
+    {
+        "label": "Q1 Mayo CT ($\\sigma$=0.10)",
+        "gt":    "examples/q1_gt.npy",
+        "noisy": "examples/q1_noisy.npy",
+        "vmin": 0, "vmax": 1,
+    },
+    {
+        "label": "Q2 fastMRI Knee ($\\sigma$=0.07)",
+        "gt":    "examples/q2_gt.npy",
+        "noisy": "examples/q2_noisy.npy",
+        "vmin": 0, "vmax": 1,
+    },
+    {
+        "label": "Q3 Chest X-ray ($\\sigma$=0.10)",
+        "gt":    "examples/q3_gt.npy",
+        "noisy": "examples/q3_noisy.npy",
+        "vmin": 0, "vmax": 1,
+    },
 ]
+
+CHECKPOINT = "checkpoints/unet_source_checkpoint.pt"
+OUTPUT_PNG = "deft_demo_output.png"
 
 
 def main():
-    parser = argparse.ArgumentParser(description="DeFT demo runner")
-    parser.add_argument("--checkpoint", default="checkpoints/unet_source_checkpoint.pt",
-                        help="Path to pretrained source-domain checkpoint")
-    parser.add_argument("--device", default=None,
-                        help="Device to use (cuda or cpu; auto-detect if not set)")
-    args = parser.parse_args()
-
-    if args.device is None:
-        args.device = "cuda" if torch.cuda.is_available() else "cpu"
-    print(f"[run_demo] Device: {args.device}")
-
-    ckpt = Path(args.checkpoint)
+    ckpt = Path(CHECKPOINT)
     if not ckpt.exists():
         print(f"[run_demo] ERROR: checkpoint not found: {ckpt}")
         print("[run_demo] Make sure you ran the download cell first.")
         sys.exit(1)
 
+    for s in SAMPLES:
+        for key in ("gt", "noisy"):
+            if not Path(s[key]).exists():
+                print(f"[run_demo] ERROR: {s[key]} not found.")
+                sys.exit(1)
+
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"[run_demo] Device: {device}")
+
     print(f"[run_demo] Loading backbone from {ckpt} ...")
     backbone = DeFTBackbone.from_pretrained(str(ckpt))
     model = DeFT(denoiser=backbone)
-    model.to(args.device)
+    model.to(device)
 
-    all_exist = True
-    for _, path, _ in SAMPLES:
-        if not Path(path).exists():
-            print(f"[run_demo] ERROR: sample not found: {path}")
-            all_exist = False
-    if not all_exist:
-        print("[run_demo] Make sure example .npy files are downloaded (they come with the repo).")
-        sys.exit(1)
+    N = len(SAMPLES)
+    fig, axes = plt.subplots(N, 4, figsize=(16, 10))
 
-    fig, axes = plt.subplots(len(SAMPLES), 2, figsize=(10, 12))
+    col_titles = ["GT", "Noisy", "DeFT Denoised", "Residual |GT − Denoised|"]
 
-    for i, (name, path, steps) in enumerate(SAMPLES):
-        img = np.load(path).astype(np.float32)
-        if img.ndim == 2:
-            img = img[np.newaxis, ...]
-        noisy = torch.from_numpy(img).float().to(args.device).unsqueeze(0)
+    for i in range(N):
+        s = SAMPLES[i]
+        gt = np.load(s["gt"])
+        noisy = np.load(s["noisy"])
 
-        print(f"[run_demo] Adapting {name} ({steps} steps) ...", end=" ", flush=True)
-        denoised = model.adapt(noisy, steps=steps)
+        noisy_t = torch.from_numpy(noisy.copy()).float().to(device)
+        if noisy_t.ndim == 2:
+            noisy_t = noisy_t.unsqueeze(0).unsqueeze(0)
+        elif noisy_t.ndim == 3:
+            noisy_t = noisy_t.unsqueeze(0)
+
+        print(f"[run_demo] Adapting {s['label']} (5 steps) ...", end=" ", flush=True)
+        denoised_t = model.adapt(noisy_t, steps=5)
         print("done")
 
-        axes[i][0].imshow(noisy.squeeze().cpu().numpy(), cmap="gray")
-        axes[i][0].set_title(f"{name} — Noisy", fontsize=12)
-        axes[i][0].axis("off")
-        axes[i][1].imshow(denoised.squeeze().cpu().numpy(), cmap="gray")
-        axes[i][1].set_title(f"{name} — DeFT Denoised", fontsize=12)
-        axes[i][1].axis("off")
+        denoised = denoised_t.squeeze().cpu().numpy()
 
-    plt.tight_layout()
+        # Q1 CT: paper uses [-160,240] HU window, here normalized to [0,1]
+        vmin, vmax = s["vmin"], s["vmax"]
+
+        # Residual (absolute error)
+        residual = np.abs(gt.astype(np.float32) - denoised.astype(np.float32))
+
+        # --- Column 1: GT ---
+        ax = axes[i][0]
+        ax.imshow(gt, cmap="gray", vmin=vmin, vmax=vmax)
+        ax.set_title("GT" if i == 0 else "", fontsize=11)
+        ax.axis("off")
+
+        # --- Column 2: Noisy ---
+        ax = axes[i][1]
+        ax.imshow(noisy, cmap="gray", vmin=vmin, vmax=vmax)
+        ax.set_title("Noisy" if i == 0 else "", fontsize=11)
+        ax.axis("off")
+
+        # --- Column 3: DeFT Denoised ---
+        ax = axes[i][2]
+        ax.imshow(denoised, cmap="gray", vmin=vmin, vmax=vmax)
+        ax.set_title("DeFT Denoised" if i == 0 else "", fontsize=11)
+        ax.axis("off")
+
+        # --- Column 4: Residual difference map ---
+        ax = axes[i][3]
+        im = ax.imshow(residual, cmap="inferno", vmin=0, vmax=0.15)
+        ax.set_title("Residual |GT − Denoised|" if i == 0 else "", fontsize=11)
+        ax.axis("off")
+
+        # Domain label on the left
+        axes[i][0].set_ylabel(s["label"], fontsize=12, rotation=90,
+                              labelpad=10, va="center")
+
+    # Colorbar for residual column
+    cbar_ax = fig.add_axes([0.92, 0.11, 0.015, 0.78])
+    fig.colorbar(im, cax=cbar_ax, label="Absolute error")
+
     plt.suptitle("DeFT: Source-Free Single-Image Test-Time Adaptation",
-                 fontsize=14, y=1.02)
-    plt.savefig("/content/deft_demo_output.png", dpi=150, bbox_inches="tight")
+                 fontsize=14, y=0.99)
+    plt.subplots_adjust(left=0.08, right=0.91, top=0.92, bottom=0.06,
+                        wspace=0.05, hspace=0.15)
+
+    plt.savefig(OUTPUT_PNG, dpi=150, bbox_inches="tight")
     plt.show()
-    print("\n[run_demo] All three domains processed. Output saved to deft_demo_output.png")
+    print(f"\n[run_demo] Output saved to {OUTPUT_PNG}")
 
 
 if __name__ == "__main__":
