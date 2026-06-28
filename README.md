@@ -230,6 +230,7 @@ $\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee 
 Motivated by recent advances in test-time adaptation and image restoration:
 
 - [PromptIR](https://doi.org/10.52202/075280-3121) (Potlapalli et al., NeurIPS 2023) — prompt-conditioned image restoration
+- [LAN](https://doi.org/10.1109/CVPR52733.2024.02380) (Kim et al., CVPR 2024) — single-image source-free test-time adaptation
 - [TTT-MIM](https://doi.org/10.1007/978-3-031-73254-6_20) (Mansour et al., ECCV 2024) — self-supervised test-time training for denoising
 - [Task-adaptive routing](https://doi.org/10.1007/978-3-031-72104-5_7) (Yang et al., MICCAI 2024) — expert routing for medical image restoration
 - [Denoising as Adaptation](https://openreview.net/forum?id=jsBhmOCKYs) (Liao et al., ICLR 2025) — noise-space domain adaptation
@@ -238,7 +239,6 @@ Motivated by recent advances in test-time adaptation and image restoration:
 Implementation and data:
 
 - [MONAI](https://github.com/Project-MONAI/MONAI) — medical imaging pipelines
-- [LAN](https://doi.org/10.1109/CVPR52733.2024.02380) (Kim et al., CVPR 2024) — single-image source-free test-time adaptation
 - [LIDC-IDRI](https://www.cancerimagingarchive.net/collection/lidc-idri/), [IXI](https://brain-development.org/ixi-dataset/), [OASIS-1](https://sites.wustl.edu/oasisbrains/), [Mayo CT](https://www.aapm.org/GrandChallenge/LowDoseCT/), [fastMRI](https://fastmri.med.nyu.edu/), [ChestX-ray14](https://nihcc.app.box.com/v/ChestXray-NIHCC)
 
 <!--
