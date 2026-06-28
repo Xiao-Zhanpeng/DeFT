@@ -205,21 +205,21 @@ python run_demo.py
 
 ### Main Comparison ($\mathcal{Q}_1$ / $\mathcal{Q}_2$ / $\mathcal{Q}_3$)
 
-$\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee MRI ($\sigma{=}0.07$, Rician), $\mathcal{Q}_3$ Chest X-ray ($\sigma{=}0.10$). **Bold** / <u>underline</u> mark best / second-best. Full table with s.d. and RMSE available in the manuscript.
+$\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee MRI ($\sigma{=}0.07$, Rician), $\mathcal{Q}_3$ Chest X-ray ($\sigma{=}0.10$). **Bold** / <u>underline</u> mark best / second-best. Full table with RMSE and s.d. available in the manuscript.
 
-| Method | PSNR ↑ | SSIM ↑ |
-|--------|:---:|:---:|
-| Restormer | 30.16<br>29.03<br><u>30.25</u> | 0.5957<br>0.7402<br>0.6570 |
-| SwinIR | 29.05<br><u>29.32</u><br>28.73 | 0.5580<br>0.7525<br>0.5756 |
-| B2U | 19.86<br>27.65<br>29.27 | 0.3531<br>0.7229<br>0.6482 |
-| AP-BSN | <u>30.64</u><br>27.01<br>28.99 | 0.6822<br>0.6651<br><u>0.8508</u> |
-| ZS-N2N | 28.19<br>24.41<br>29.96 | 0.5470<br>0.6018<br>0.6975 |
-| DIP | 25.30<br>26.12<br>25.60 | 0.4592<br>0.6117<br>0.4660 |
-| CycleGAN | 29.99<br>23.70<br>14.40 | <u>0.7732</u><br>0.5295<br>0.5358 |
-| RegGAN | 30.09<br>26.02<br>18.26 | 0.7697<br>0.5690<br>0.6431 |
-| CoTTA | 28.44<br>29.03<br>24.14 | 0.6405<br>0.7609<br>0.8229 |
-| LAN | 28.07<br>28.49<br>22.39 | 0.6398<br><u>0.7658</u><br>0.8311 |
-| **DeFT (Ours)** | **32.56**<br>**29.38**<br>**31.82** | **0.7841**<br>**0.7712**<br>**0.8535** |
+| Method | $\mathcal{Q}_1$ PSNR / SSIM | $\mathcal{Q}_2$ PSNR / SSIM | $\mathcal{Q}_3$ PSNR / SSIM |
+|--------|:---:|:---:|:---:|
+| Restormer | 30.16 / 0.5957 | 29.03 / 0.7402 | <u>30.25</u> / 0.6570 |
+| SwinIR | 29.05 / 0.5580 | <u>29.32</u> / 0.7525 | 28.73 / 0.5756 |
+| B2U | 19.86 / 0.3531 | 27.65 / 0.7229 | 29.27 / 0.6482 |
+| AP-BSN | <u>30.64</u> / 0.6822 | 27.01 / 0.6651 | 28.99 / <u>0.8508</u> |
+| ZS-N2N | 28.19 / 0.5470 | 24.41 / 0.6018 | 29.96 / 0.6975 |
+| DIP | 25.30 / 0.4592 | 26.12 / 0.6117 | 25.60 / 0.4660 |
+| CycleGAN | 29.99 / <u>0.7732</u> | 23.70 / 0.5295 | 14.40 / 0.5358 |
+| RegGAN | 30.09 / 0.7697 | 26.02 / 0.5690 | 18.26 / 0.6431 |
+| CoTTA | 28.44 / 0.6405 | 29.03 / 0.7609 | 24.14 / 0.8229 |
+| LAN | 28.07 / 0.6398 | 28.49 / <u>0.7658</u> | 22.39 / 0.8311 |
+| **DeFT (Ours)** | **32.56** / **0.7841** | **29.38** / **0.7712** | **31.82** / **0.8535** |
 
 > Full results including PSNR / RMSE / SSIM with standard deviations across 9 target configurations ($\mathcal{Q}_1{\times}3\sigma$, $\mathcal{Q}_2{\times}3\sigma$, $\mathcal{Q}_3{\times}3\sigma$) are available in the manuscript.
 
