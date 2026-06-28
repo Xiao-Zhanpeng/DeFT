@@ -205,23 +205,23 @@ python run_demo.py
 
 ### Main Comparison ($\mathcal{Q}_1$ / $\mathcal{Q}_2$ / $\mathcal{Q}_3$)
 
-Values report mean ± s.d. for representative target configurations: $\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee MRI ($\sigma{=}0.07$, Rician), $\mathcal{Q}_3$ Chest X-ray ($\sigma{=}0.10$). **Bold** = best, <u>underline</u> = second-best. Full results across 9 target configurations in the manuscript.
+$\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee MRI ($\sigma{=}0.07$, Rician), $\mathcal{Q}_3$ Chest X-ray ($\sigma{=}0.10$). **Bold** / <u>underline</u> mark best / second-best. Full table with s.d. and RMSE available in the manuscript.
 
-| Method | PSNR ↑ | RMSE ↓ | SSIM ↑ |
-|--------|:---:|:---:|:---:|
-| Restormer | 30.16<span style="font-size:75%"> ±.29</span><br>29.03<span style="font-size:75%"> ±1.07</span><br><u>30.25<span style="font-size:75%"> ±.39</span></u> | 0.0311<span style="font-size:75%"> ±.0011</span><br>0.0356<span style="font-size:75%"> ±.0046</span><br><u>0.0308<span style="font-size:75%"> ±.0014</span></u> | 0.5957<span style="font-size:75%"> ±.0313</span><br>0.7402<span style="font-size:75%"> ±.0801</span><br>0.6570<span style="font-size:75%"> ±.0336</span> |
-| SwinIR | 29.05<span style="font-size:75%"> ±.37</span><br><u>29.32<span style="font-size:75%"> ±1.23</span></u><br>28.73<span style="font-size:75%"> ±.30</span> | 0.0353<span style="font-size:75%"> ±.0015</span><br><u>0.0345<span style="font-size:75%"> ±.0050</span></u><br>0.0366<span style="font-size:75%"> ±.0012</span> | 0.5580<span style="font-size:75%"> ±.0284</span><br>0.7525<span style="font-size:75%"> ±.0796</span><br>0.5756<span style="font-size:75%"> ±.0339</span> |
-| B2U | 19.86<span style="font-size:75%"> ±.57</span><br>27.65<span style="font-size:75%"> ±1.62</span><br>29.27<span style="font-size:75%"> ±.38</span> | 0.1018<span style="font-size:75%"> ±.0066</span><br>0.0422<span style="font-size:75%"> ±.0086</span><br>0.0344<span style="font-size:75%"> ±.0015</span> | 0.3531<span style="font-size:75%"> ±.0301</span><br>0.7229<span style="font-size:75%"> ±.0916</span><br>0.6482<span style="font-size:75%"> ±.0417</span> |
-| AP-BSN | <u>30.64<span style="font-size:75%"> ±.74</span></u><br>27.01<span style="font-size:75%"> ±1.52</span><br>28.99<span style="font-size:75%"> ±.65</span> | <u>0.0295<span style="font-size:75%"> ±.0025</span></u><br>0.0454<span style="font-size:75%"> ±.0107</span><br>0.0356<span style="font-size:75%"> ±.0027</span> | 0.6822<span style="font-size:75%"> ±.0383</span><br>0.6651<span style="font-size:75%"> ±.1046</span><br><u>0.8508<span style="font-size:75%"> ±.0409</span></u> |
-| ZS-N2N | 28.19<span style="font-size:75%"> ±.40</span><br>24.41<span style="font-size:75%"> ±3.65</span><br>29.96<span style="font-size:75%"> ±.53</span> | 0.0390<span style="font-size:75%"> ±.0018</span><br>0.0684<span style="font-size:75%"> ±.0332</span><br>0.0318<span style="font-size:75%"> ±.0020</span> | 0.5470<span style="font-size:75%"> ±.0361</span><br>0.6018<span style="font-size:75%"> ±.1234</span><br>0.6975<span style="font-size:75%"> ±.0288</span> |
-| DIP | 25.30<span style="font-size:75%"> ±.73</span><br>26.12<span style="font-size:75%"> ±1.21</span><br>25.60<span style="font-size:75%"> ±1.27</span> | 0.0545<span style="font-size:75%"> ±.0045</span><br>0.0499<span style="font-size:75%"> ±.0075</span><br>0.0530<span style="font-size:75%"> ±.0077</span> | 0.4592<span style="font-size:75%"> ±.0405</span><br>0.6117<span style="font-size:75%"> ±.0843</span><br>0.4660<span style="font-size:75%"> ±.0710</span> |
-| CycleGAN | 29.99<span style="font-size:75%"> ±.93</span><br>23.70<span style="font-size:75%"> ±4.65</span><br>14.40<span style="font-size:75%"> ±3.29</span> | 0.0318<span style="font-size:75%"> ±.0036</span><br>0.0762<span style="font-size:75%"> ±.0524</span><br>0.2030<span style="font-size:75%"> ±.0656</span> | <u>0.7732<span style="font-size:75%"> ±.0219</span></u><br>0.5295<span style="font-size:75%"> ±.1566</span><br>0.5358<span style="font-size:75%"> ±.0591</span> |
-| RegGAN | 30.09<span style="font-size:75%"> ±.90</span><br>26.02<span style="font-size:75%"> ±5.10</span><br>18.26<span style="font-size:75%"> ±4.34</span> | 0.0315<span style="font-size:75%"> ±.0033</span><br>0.0627<span style="font-size:75%"> ±.0621</span><br>0.1367<span style="font-size:75%"> ±.0596</span> | 0.7697<span style="font-size:75%"> ±.0210</span><br>0.5690<span style="font-size:75%"> ±.1772</span><br>0.6431<span style="font-size:75%"> ±.0505</span> |
-| CoTTA | 28.44<span style="font-size:75%"> ±1.05</span><br>29.03<span style="font-size:75%"> ±1.44</span><br>24.14<span style="font-size:75%"> ±1.05</span> | 0.0381<span style="font-size:75%"> ±.0049</span><br>0.0359<span style="font-size:75%"> ±.0066</span><br>0.0625<span style="font-size:75%"> ±.0076</span> | 0.6405<span style="font-size:75%"> ±.0410</span><br>0.7609<span style="font-size:75%"> ±.0657</span><br>0.8229<span style="font-size:75%"> ±.0345</span> |
-| LAN | 28.07<span style="font-size:75%"> ±1.25</span><br>28.49<span style="font-size:75%"> ±1.60</span><br>22.39<span style="font-size:75%"> ±.91</span> | 0.0399<span style="font-size:75%"> ±.0061</span><br>0.0383<span style="font-size:75%"> ±.0075</span><br>0.0763<span style="font-size:75%"> ±.0080</span> | 0.6398<span style="font-size:75%"> ±.0389</span><br><u>0.7658<span style="font-size:75%"> ±.0633</span></u><br>0.8311<span style="font-size:75%"> ±.0321</span> |
-| **DeFT (Ours)** | **32.56<span style="font-size:75%"> ±1.17</span>**<br>**29.38<span style="font-size:75%"> ±1.45</span>**<br>**31.82<span style="font-size:75%"> ±.75</span>** | **0.0238<span style="font-size:75%"> ±.0035</span>**<br>**0.0345<span style="font-size:75%"> ±.0061</span>**<br>**0.0258<span style="font-size:75%"> ±.0024</span>** | **0.7841<span style="font-size:75%"> ±.0670</span>**<br>**0.7712<span style="font-size:75%"> ±.0628</span>**<br>**0.8535<span style="font-size:75%"> ±.0320</span>** |
+| Method | PSNR ↑ | SSIM ↑ |
+|--------|:---:|:---:|
+| Restormer | 30.16<br>29.03<br><u>30.25</u> | 0.5957<br>0.7402<br>0.6570 |
+| SwinIR | 29.05<br><u>29.32</u><br>28.73 | 0.5580<br>0.7525<br>0.5756 |
+| B2U | 19.86<br>27.65<br>29.27 | 0.3531<br>0.7229<br>0.6482 |
+| AP-BSN | <u>30.64</u><br>27.01<br>28.99 | 0.6822<br>0.6651<br><u>0.8508</u> |
+| ZS-N2N | 28.19<br>24.41<br>29.96 | 0.5470<br>0.6018<br>0.6975 |
+| DIP | 25.30<br>26.12<br>25.60 | 0.4592<br>0.6117<br>0.4660 |
+| CycleGAN | 29.99<br>23.70<br>14.40 | <u>0.7732</u><br>0.5295<br>0.5358 |
+| RegGAN | 30.09<br>26.02<br>18.26 | 0.7697<br>0.5690<br>0.6431 |
+| CoTTA | 28.44<br>29.03<br>24.14 | 0.6405<br>0.7609<br>0.8229 |
+| LAN | 28.07<br>28.49<br>22.39 | 0.6398<br><u>0.7658</u><br>0.8311 |
+| **DeFT (Ours)** | **32.56**<br>**29.38**<br>**31.82** | **0.7841**<br>**0.7712**<br>**0.8535** |
 
-> Full results including cross-noise diagnostics across 9 target configurations ($\mathcal{Q}_1{\times}3\sigma$, $\mathcal{Q}_2{\times}3\sigma$, $\mathcal{Q}_3{\times}3\sigma$) are available in the manuscript.
+> Full results including PSNR / RMSE / SSIM with standard deviations across 9 target configurations ($\mathcal{Q}_1{\times}3\sigma$, $\mathcal{Q}_2{\times}3\sigma$, $\mathcal{Q}_3{\times}3\sigma$) are available in the manuscript.
 
 ---
 
