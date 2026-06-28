@@ -19,6 +19,28 @@
 
 ---
 
+## 📂 Project Structure
+
+```
+deft-open-source/
+├── deft/                  # DeFT core package
+│   ├── model.py           # DeFT main class + adapt() loop
+│   ├── descriptor.py      # DescriptorState + noise estimation
+│   ├── dci.py             # FiLM / PromptFiLM conditioning layers
+│   ├── prm.py             # PolarizedRouteMixture dual-route spatial mixing
+│   ├── dcs.py             # DescriptorConditionedScheduler
+│   ├── backbone.py        # DeFTBackbone (31M U-Net)
+│   └── loss.py            # Neighbor2Neighbor + Charbonnier
+├── examples/              # Sample images for Quick Start
+├── check_env.py           # Environment checker
+├── environment.yaml        # Conda environment (mamba preferred)
+├── requirements.txt        # pip fallback
+├── scripts/               # One-click run scripts
+└── checkpoints/           # Download checkpoints here
+```
+
+---
+
 ## 🛠️ Requirements
 
 Hardware (reference)
@@ -50,51 +72,36 @@ python check_env.py
 
 ---
 
-## 🚀 Quick Start
-
-```bash
-# Step 1: Environment
-mamba env create -f environment.yaml && mamba activate deft
-python check_env.py
-
-# Step 2: Download backbone checkpoint (choose one)
-# Option A: Google Drive
-pip install gdown && gdown --id 372932474 -O checkpoints/unet_source_checkpoint.pt
-# Option B: Hugging Face 🤗
-pip install huggingface_hub && huggingface-cli download Lockbro/deft-checkpoints unet_source_checkpoint.pt --local-dir checkpoints/
-
-# Step 3: Run DeFT on a sample image
-python demo.py --input examples/q1_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
-```
-
-Example images for Q1/Q2/Q3 are provided in the `examples/` directory. See below for per-domain demo commands.
-
----
-
 ## 📂 Data & Checkpoints
 
 ### Datasets (source $\mathcal{P}$ and targets $\mathcal{Q}_1, \mathcal{Q}_2, \mathcal{Q}_3$)
 
-| Role | Dataset | Modality | Download |
-|:----:|---------|:--------:|----------|
-| $\mathcal{P}$ | LIDC-IDRI | CT | [TCIA](https://www.cancerimagingarchive.net/collection/lidc-idri/) |
-| $\mathcal{P}$ | IXI | MRI | [brain-development](https://brain-development.org/ixi-dataset/) |
-| $\mathcal{P}$ | OASIS-1 | MRI | [oasis-brains](https://sites.wustl.edu/oasisbrains/) |
-| $\mathcal{Q}_1$ | Mayo Low-Dose CT | CT | [AAPM](https://www.aapm.org/GrandChallenge/LowDoseCT/) |
-| $\mathcal{Q}_2$ | fastMRI Knee | MRI | [fastMRI](https://fastmri.med.nyu.edu/) |
-| $\mathcal{Q}_3$ | ChestX-ray14 | X-ray | [NIHCC](https://nihcc.app.box.com/v/ChestXray-NIHCC) |
+<table>
+<tr><th>Role</th><th>Dataset</th><th>Modality</th><th>Download</th></tr>
+<tr><td rowspan="3">$\mathcal{P}$</td><td>LIDC-IDRI</td><td align="center">CT</td><td><a href="https://www.cancerimagingarchive.net/collection/lidc-idri/">TCIA</a></td></tr>
+<tr><td>IXI</td><td align="center">MRI</td><td><a href="https://brain-development.org/ixi-dataset/">brain-development</a></td></tr>
+<tr><td>OASIS-1</td><td align="center">MRI</td><td><a href="https://sites.wustl.edu/oasisbrains/">oasis-brains</a></td></tr>
+<tr><td>$\mathcal{Q}_1$</td><td>Mayo Low-Dose CT</td><td align="center">CT</td><td><a href="https://www.aapm.org/GrandChallenge/LowDoseCT/">AAPM</a></td></tr>
+<tr><td>$\mathcal{Q}_2$</td><td>fastMRI Knee</td><td align="center">MRI</td><td><a href="https://fastmri.med.nyu.edu/">fastMRI</a></td></tr>
+<tr><td>$\mathcal{Q}_3$</td><td>ChestX-ray14</td><td align="center">X-ray</td><td><a href="https://nihcc.app.box.com/v/ChestXray-NIHCC">NIHCC</a></td></tr>
+</table>
 
 Pre-built Google Drive archive (7z / tar compressed):
 ```bash
+# Download all 6 dataset archives (Google Drive)
 pip install gdown
 gdown --folder 1J3rZ3AjbTTo3laSZmi1cqe886QQbk7Tw
+
+# Extract each archive into raw_medical_datasets/
 mkdir -p raw_medical_datasets
-7z x IXI-Dataset.7z -o raw_medical_datasets
-7z x NIH-ChestX-ray14.7z -o raw_medical_datasets
-7z x LIDC-IDRI.7z -o raw_medical_datasets
-7z x OASIS-1.7z -o raw_medical_datasets
-7z x 2016_mayo_CT.7z -o raw_medical_datasets
-tar -xf fastMRI_knee_singlecoil.tar -C raw_medical_datasets
+7z x IXI-Dataset.7z -o raw_medical_datasets          # Brain MRI (IXI)
+7z x NIH-ChestX-ray14.7z -o raw_medical_datasets      # Chest X-ray
+7z x LIDC-IDRI.7z -o raw_medical_datasets             # Lung CT
+7z x OASIS-1.7z -o raw_medical_datasets               # Brain MRI (OASIS)
+7z x 2016_mayo_CT.7z -o raw_medical_datasets          # Abdomen CT (Mayo)
+tar -xf fastMRI_knee_singlecoil.tar -C raw_medical_datasets  # Knee MRI
+
+# Build train/val/test splits
 python tools/auto_build_datasets.py --raw-root raw_medical_datasets --out-root preprocessed_datasets
 ```
 
@@ -126,34 +133,16 @@ huggingface-cli download Lockbro/deft-checkpoints --local-dir checkpoints/
 
 ---
 
-## 📂 Project Structure
-
-```
-deft-open-source/
-├── deft/                  # DeFT core package
-│   ├── model.py           # DeFT main class + adapt() loop
-│   ├── descriptor.py      # DescriptorState + noise estimation
-│   ├── dci.py             # FiLM / PromptFiLM conditioning layers
-│   ├── prm.py             # PolarizedRouteMixture dual-route spatial mixing
-│   ├── dcs.py             # DescriptorConditionedScheduler
-│   ├── backbone.py        # DeFTBackbone (31M U-Net)
-│   └── loss.py            # Neighbor2Neighbor + Charbonnier
-├── examples/              # Sample images for Quick Start
-├── check_env.py           # Environment checker
-├── environment.yaml        # Conda environment (mamba preferred)
-├── requirements.txt        # pip fallback
-├── scripts/               # One-click run scripts
-└── checkpoints/           # Download checkpoints here
-```
-
----
-
 ## 🏋️ Training & Evaluation
 
 ### Training (source-domain pretraining)
 
 ```bash
+# Pre-train a DeFT backbone on the source domain (LIDC-CT + IXI/OASIS-MRI)
 python scripts/train_deft.py --data-root data/P_train --output-dir checkpoints
+
+# The resulting checkpoint is used for downstream test-time adaptation.
+# See "Evaluation" below for running DeFT on target domains.
 ```
 
 | Parameter | Value |
@@ -164,7 +153,7 @@ python scripts/train_deft.py --data-root data/P_train --output-dir checkpoints
 | Batch size | 16 |
 | Epochs | 100 |
 | Loss | Charbonnier ($\varepsilon=10^{-3}$) + Neighbor2Neighbor |
-| Data augmentation | Random H/V flip, 90° rotation |
+| Data augmentation | Random H/V flip |
 | Pretraining data | LIDC-IDRI (CT) + IXI/OASIS-1 (MRI) |
 
 ### Evaluation (test-time adaptation)
@@ -194,23 +183,43 @@ Canonical DeFT evaluation configuration:
 
 ---
 
+## 🚀 Quick Start
+
+Try DeFT in your browser — no local setup needed:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb)
+
+Or run locally after completing the steps above:
+
+```bash
+# Download the backbone checkpoint (see Data & Checkpoints section)
+huggingface-cli download Lockbro/deft-checkpoints unet_source_checkpoint.pt --local-dir checkpoints/
+
+# Run DeFT on example images
+python run_demo.py
+```
+
+---
+
 ## 📊 Results
 
-### Main Comparison (representative Q1 / Q2 / Q3 settings)
+### Main Comparison ($\mathcal{Q}_1$ / $\mathcal{Q}_2$ / $\mathcal{Q}_3$)
 
-| Method | Q1 PSNR / SSIM | Q2 PSNR / SSIM | Q3 PSNR / SSIM |
-|--------|:---:|:---:|:---:|
-| **DeFT (Ours)** | **32.56 / 0.7841** | **29.38 / 0.7712** | **31.82 / 0.8535** |
-| Restormer | 30.16 / 0.5957 | 29.03 / 0.7402 | <u>30.25</u> / 0.6570 |
-| SwinIR | 29.05 / 0.5580 | <u>29.32</u> / 0.7525 | 28.73 / 0.5756 |
-| B2U | 19.86 / 0.3531 | 27.65 / 0.7229 | 29.27 / 0.6482 |
-| AP-BSN | <u>30.64</u> / 0.6822 | 27.01 / 0.6651 | 28.99 / <u>0.8508</u> |
-| ZS-N2N | 28.19 / 0.5470 | 24.41 / 0.6018 | 29.96 / 0.6975 |
-| DIP | 25.30 / 0.4592 | 26.12 / 0.6117 | 25.60 / 0.4660 |
-| CycleGAN | 29.99 / <u>0.7732</u> | 23.70 / 0.5295 | 14.40 / 0.5358 |
-| RegGAN | 30.09 / 0.7697 | 26.02 / 0.5690 | 18.26 / 0.6431 |
-| CoTTA | 28.44 / 0.6405 | 29.03 / 0.7609 | 24.14 / 0.8229 |
-| LAN | 28.07 / 0.6398 | 28.49 / <u>0.7658</u> | 22.39 / 0.8311 |
+Values report mean ± s.d. for representative target configurations: $\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee MRI ($\sigma{=}0.07$, Rician), $\mathcal{Q}_3$ Chest X-ray ($\sigma{=}0.10$). **Bold** = best, <u>underline</u> = second-best. Full results across 9 target configurations in the manuscript.
+
+| Method | $\mathcal{Q}_1$ PSNR / RMSE / SSIM | $\mathcal{Q}_2$ PSNR / RMSE / SSIM | $\mathcal{Q}_3$ PSNR / RMSE / SSIM |
+|--------|------|------|------|
+| **DeFT (Ours)** | **32.56**<span style="font-size:75%"> ±1.17</span> / **0.0238**<span style="font-size:75%"> ±.0035</span> / **0.7841**<span style="font-size:75%"> ±.0670</span> | **29.38**<span style="font-size:75%"> ±1.45</span> / **0.0345**<span style="font-size:75%"> ±.0061</span> / **0.7712**<span style="font-size:75%"> ±.0628</span> | **31.82**<span style="font-size:75%"> ±.75</span> / **0.0258**<span style="font-size:75%"> ±.0024</span> / **0.8535**<span style="font-size:75%"> ±.0320</span> |
+| Restormer | 30.16<span style="font-size:75%"> ±.29</span> / 0.0311<span style="font-size:75%"> ±.0011</span> / 0.5957<span style="font-size:75%"> ±.0313</span> | 29.03<span style="font-size:75%"> ±1.07</span> / 0.0356<span style="font-size:75%"> ±.0046</span> / 0.7402<span style="font-size:75%"> ±.0801</span> | <u>30.25</u><span style="font-size:75%"> ±.39</span> / <u>0.0308</u><span style="font-size:75%"> ±.0014</span> / 0.6570<span style="font-size:75%"> ±.0336</span> |
+| SwinIR | 29.05<span style="font-size:75%"> ±.37</span> / 0.0353<span style="font-size:75%"> ±.0015</span> / 0.5580<span style="font-size:75%"> ±.0284</span> | <u>29.32</u><span style="font-size:75%"> ±1.23</span> / <u>0.0345</u><span style="font-size:75%"> ±.0050</span> / 0.7525<span style="font-size:75%"> ±.0796</span> | 28.73<span style="font-size:75%"> ±.30</span> / 0.0366<span style="font-size:75%"> ±.0012</span> / 0.5756<span style="font-size:75%"> ±.0339</span> |
+| B2U | 19.86<span style="font-size:75%"> ±.57</span> / 0.1018<span style="font-size:75%"> ±.0066</span> / 0.3531<span style="font-size:75%"> ±.0301</span> | 27.65<span style="font-size:75%"> ±1.62</span> / 0.0422<span style="font-size:75%"> ±.0086</span> / 0.7229<span style="font-size:75%"> ±.0916</span> | 29.27<span style="font-size:75%"> ±.38</span> / 0.0344<span style="font-size:75%"> ±.0015</span> / 0.6482<span style="font-size:75%"> ±.0417</span> |
+| AP-BSN | <u>30.64</u><span style="font-size:75%"> ±.74</span> / <u>0.0295</u><span style="font-size:75%"> ±.0025</span> / 0.6822<span style="font-size:75%"> ±.0383</span> | 27.01<span style="font-size:75%"> ±1.52</span> / 0.0454<span style="font-size:75%"> ±.0107</span> / 0.6651<span style="font-size:75%"> ±.1046</span> | 28.99<span style="font-size:75%"> ±.65</span> / 0.0356<span style="font-size:75%"> ±.0027</span> / <u>0.8508</u><span style="font-size:75%"> ±.0409</span> |
+| ZS-N2N | 28.19<span style="font-size:75%"> ±.40</span> / 0.0390<span style="font-size:75%"> ±.0018</span> / 0.5470<span style="font-size:75%"> ±.0361</span> | 24.41<span style="font-size:75%"> ±3.65</span> / 0.0684<span style="font-size:75%"> ±.0332</span> / 0.6018<span style="font-size:75%"> ±.1234</span> | 29.96<span style="font-size:75%"> ±.53</span> / 0.0318<span style="font-size:75%"> ±.0020</span> / 0.6975<span style="font-size:75%"> ±.0288</span> |
+| DIP | 25.30<span style="font-size:75%"> ±.73</span> / 0.0545<span style="font-size:75%"> ±.0045</span> / 0.4592<span style="font-size:75%"> ±.0405</span> | 26.12<span style="font-size:75%"> ±1.21</span> / 0.0499<span style="font-size:75%"> ±.0075</span> / 0.6117<span style="font-size:75%"> ±.0843</span> | 25.60<span style="font-size:75%"> ±1.27</span> / 0.0530<span style="font-size:75%"> ±.0077</span> / 0.4660<span style="font-size:75%"> ±.0710</span> |
+| CycleGAN | 29.99<span style="font-size:75%"> ±.93</span> / 0.0318<span style="font-size:75%"> ±.0036</span> / <u>0.7732</u><span style="font-size:75%"> ±.0219</span> | 23.70<span style="font-size:75%"> ±4.65</span> / 0.0762<span style="font-size:75%"> ±.0524</span> / 0.5295<span style="font-size:75%"> ±.1566</span> | 14.40<span style="font-size:75%"> ±3.29</span> / 0.2030<span style="font-size:75%"> ±.0656</span> / 0.5358<span style="font-size:75%"> ±.0591</span> |
+| RegGAN | 30.09<span style="font-size:75%"> ±.90</span> / 0.0315<span style="font-size:75%"> ±.0033</span> / 0.7697<span style="font-size:75%"> ±.0210</span> | 26.02<span style="font-size:75%"> ±5.10</span> / 0.0627<span style="font-size:75%"> ±.0621</span> / 0.5690<span style="font-size:75%"> ±.1772</span> | 18.26<span style="font-size:75%"> ±4.34</span> / 0.1367<span style="font-size:75%"> ±.0596</span> / 0.6431<span style="font-size:75%"> ±.0505</span> |
+| CoTTA | 28.44<span style="font-size:75%"> ±1.05</span> / 0.0381<span style="font-size:75%"> ±.0049</span> / 0.6405<span style="font-size:75%"> ±.0410</span> | 29.03<span style="font-size:75%"> ±1.44</span> / 0.0359<span style="font-size:75%"> ±.0066</span> / 0.7609<span style="font-size:75%"> ±.0657</span> | 24.14<span style="font-size:75%"> ±1.05</span> / 0.0625<span style="font-size:75%"> ±.0076</span> / 0.8229<span style="font-size:75%"> ±.0345</span> |
+| LAN | 28.07<span style="font-size:75%"> ±1.25</span> / 0.0399<span style="font-size:75%"> ±.0061</span> / 0.6398<span style="font-size:75%"> ±.0389</span> | 28.49<span style="font-size:75%"> ±1.60</span> / 0.0383<span style="font-size:75%"> ±.0075</span> / <u>0.7658</u><span style="font-size:75%"> ±.0633</span> | 22.39<span style="font-size:75%"> ±.91</span> / 0.0763<span style="font-size:75%"> ±.0080</span> / 0.8311<span style="font-size:75%"> ±.0321</span> |
 
 > Full results including cross-noise diagnostics across 9 target configurations (Q1 × 3 σ, Q2 × 3 σ, Q3 × 3 σ) are available in the manuscript.
 
@@ -225,6 +234,7 @@ This work builds on the following open-source projects and datasets:
 - LAN [Kim et al., CVPR 2024] — source-free single-image TTA setting
 - Datasets: [LIDC-IDRI](https://www.cancerimagingarchive.net/collection/lidc-idri/), [IXI](https://brain-development.org/ixi-dataset/), [OASIS-1](https://sites.wustl.edu/oasisbrains/), [Mayo Low-Dose CT](https://www.aapm.org/GrandChallenge/LowDoseCT/), [fastMRI](https://fastmri.med.nyu.edu/), [NIH ChestX-ray14](https://nihcc.app.box.com/v/ChestXray-NIHCC)
 
+<!--
 ## Citation
 
 If you find this work useful, please consider citing:
@@ -237,6 +247,7 @@ If you find this work useful, please consider citing:
       howpublished={arXiv preprint, 2025},
 }
 ```
+-->
 
 ## License
 
