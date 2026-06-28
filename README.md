@@ -185,11 +185,9 @@ Canonical DeFT evaluation configuration:
 
 ## 🚀 Quick Start
 
-Try DeFT in your browser — no local setup needed:
+Try DeFT in your browser — [open demo in Colab](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb).
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb)
-
-Or run locally after completing the steps above:
+Or run locally:
 
 ```bash
 # Download the backbone checkpoint (see Data & Checkpoints section)
