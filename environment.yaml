@@ -15,8 +15,10 @@ dependencies:
   - pandas>=1.5.0
   - matplotlib>=3.7.0
   - h5py
+  - huggingface_hub
+  - imageio>=2.25.0
   - pip
   - pip:
-    - basicsr
-    - lpips>=0.1.4
-    - piq>=0.8.0
+      - basicsr
+      - lpips>=0.1.4
+      - piq>=0.8.0

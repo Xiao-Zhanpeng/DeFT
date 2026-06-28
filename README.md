@@ -201,16 +201,16 @@ Canonical DeFT evaluation configuration:
 | Method | Q1 PSNR / SSIM | Q2 PSNR / SSIM | Q3 PSNR / SSIM |
 |--------|:---:|:---:|:---:|
 | **DeFT (Ours)** | **32.56 / 0.7841** | **29.38 / 0.7712** | **31.82 / 0.8535** |
-| Restormer | 31.58 / 0.7698 | 28.95 / 0.7601 | 31.67 / 0.8596 |
-| SwinIR | 30.82 / 0.7581 | 28.51 / 0.7461 | 30.48 / 0.8457 |
-| B2U | 31.12 / 0.7630 | 27.36 / 0.7130 | 30.92 / 0.8504 |
-| AP-BSN | 31.15 / 0.7541 | 28.96 / 0.7498 | 31.44 / 0.8599 |
-| ZS-N2N | 31.59 / 0.7574 | 29.05 / 0.7283 | 31.04 / 0.8268 |
-| DIP | 31.19 / 0.7482 | 28.43 / 0.7109 | 30.58 / 0.8219 |
-| CycleGAN | 24.49 / 0.5609 | 23.87 / 0.5560 | 24.15 / 0.6687 |
-| RegGAN | 24.71 / 0.5714 | 23.88 / 0.5604 | 24.39 / 0.6776 |
-| CoTTA | 27.37 / 0.6642 | 26.18 / 0.6262 | 26.24 / 0.7372 |
-| LAN | 23.89 / 0.7585 | 27.15 / 0.7121 | 26.56 / 0.7907 |
+| Restormer | 30.16 / 0.5957 | 29.03 / 0.7402 | <u>30.25</u> / 0.6570 |
+| SwinIR | 29.05 / 0.5580 | <u>29.32</u> / 0.7525 | 28.73 / 0.5756 |
+| B2U | 19.86 / 0.3531 | 27.65 / 0.7229 | 29.27 / 0.6482 |
+| AP-BSN | <u>30.64</u> / 0.6822 | 27.01 / 0.6651 | 28.99 / <u>0.8508</u> |
+| ZS-N2N | 28.19 / 0.5470 | 24.41 / 0.6018 | 29.96 / 0.6975 |
+| DIP | 25.30 / 0.4592 | 26.12 / 0.6117 | 25.60 / 0.4660 |
+| CycleGAN | 29.99 / <u>0.7732</u> | 23.70 / 0.5295 | 14.40 / 0.5358 |
+| RegGAN | 30.09 / 0.7697 | 26.02 / 0.5690 | 18.26 / 0.6431 |
+| CoTTA | 28.44 / 0.6405 | 29.03 / 0.7609 | 24.14 / 0.8229 |
+| LAN | 28.07 / 0.6398 | 28.49 / <u>0.7658</u> | 22.39 / 0.8311 |
 
 > Full results including cross-noise diagnostics across 9 target configurations (Q1 × 3 σ, Q2 × 3 σ, Q3 × 3 σ) are available in the manuscript.
 
@@ -225,20 +225,19 @@ This work builds on the following open-source projects and datasets:
 - LAN [Kim et al., CVPR 2024] — source-free single-image TTA setting
 - Datasets: [LIDC-IDRI](https://www.cancerimagingarchive.net/collection/lidc-idri/), [IXI](https://brain-development.org/ixi-dataset/), [OASIS-1](https://sites.wustl.edu/oasisbrains/), [Mayo Low-Dose CT](https://www.aapm.org/GrandChallenge/LowDoseCT/), [fastMRI](https://fastmri.med.nyu.edu/), [NIH ChestX-ray14](https://nihcc.app.box.com/v/ChestXray-NIHCC)
 
-<!--
 ## Citation
 
 If you find this work useful, please consider citing:
 
 ```
 @misc{deft2025,
-      title={DeFT: Descriptor-Forked Test-Time Adaptation for Multi-Domain Medical Image Denoising},
-      author={},
+      title={DeFT: Descriptor-Forked Test-Time Adaptation for Generalizable Medical Image Denoising},
+      author={Zhanpeng Xiao and others},
       year={2025},
+      howpublished={arXiv preprint, 2025},
 }
 ```
 
-## Contact
+## License
 
-For questions, please open an issue or contact [author] at [email].
--->
+This project is released under the [MIT License](LICENSE).

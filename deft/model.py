@@ -1361,7 +1361,7 @@ class DeFT(nn.Module):
         self._set_structure_target(structure_target)
 
         # Core N2N loss (canonical loss engine)
-        loss_ss = self._compute_n2n_loss(noisy)
+        loss_ss = self._compute_n2n_loss(noisy, step=step, total_steps=total_steps)
         total_loss = loss_ss
 
         # PRM: dual-route auxiliary losses
@@ -1397,10 +1397,10 @@ class DeFT(nn.Module):
 
         return total_loss
 
-    def _compute_n2n_loss(self, noisy: torch.Tensor, patch_mask: torch.Tensor = None) -> torch.Tensor:
+    def _compute_n2n_loss(self, noisy: torch.Tensor, patch_mask: torch.Tensor = None, step: int = 0, total_steps: int = 1) -> torch.Tensor:
         """Compute Neighbor2Neighbor loss."""
         if self.ss_loss is not None:
-            return self.ss_loss(noisy, self.denoiser, patch_mask=patch_mask)
+            return self.ss_loss(noisy, self.denoiser, step=step, total_steps=total_steps, patch_mask=patch_mask)
         else:
             B, C, H, W = noisy.shape
             mask = torch.zeros_like(noisy)
