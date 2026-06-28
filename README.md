@@ -73,7 +73,7 @@ Example images for Q1/Q2/Q3 are provided in the `examples/` directory. See below
 
 ## 📂 Data & Checkpoints
 
-### Datasets (source $\mathcal{P}$ and targets $\mathcal{Q}_1$/$\mathcal{Q}_2$/$\mathcal{Q}_3$)
+### Datasets (source $\mathcal{P}$ and targets $\mathcal{Q}_1, \mathcal{Q}_2, \mathcal{Q}_3$)
 
 | Role | Dataset | Modality | Download |
 |:----:|---------|:--------:|----------|

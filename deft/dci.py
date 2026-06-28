@@ -20,7 +20,7 @@ class FiLMLayer(nn.Module):
     """Feature-wise Linear Modulation: h' = γ ⊙ h + β.
 
     Initialized to identity (γ=1, β=0). A per-channel affine transform
-    with only 2×C trainable parameters. Serves as the basic conditioning
+    with only 2×C trainable parameters. Is the basic conditioning
     primitive for DCI.
 
     Reference: Perez et al., "FiLM: Visual Reasoning with a General
