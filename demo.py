@@ -3,13 +3,13 @@
 
 Usage:
     # Q1 Mayo abdomen CT
-    python demo.py --input examples/q1_mayo_ct_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
+    python demo.py --input examples/q1_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
 
     # Q2 fastMRI knee MRI
-    python demo.py --input examples/q2_fastmri_knee_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
+    python demo.py --input examples/q2_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
 
     # Q3 Chest X-ray
-    python demo.py --input examples/q3_chest_xray_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
+    python demo.py --input examples/q3_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
 """
 
 import argparse

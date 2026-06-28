@@ -7,7 +7,7 @@ Loads a source-pretrained backbone, wraps it with DeFT, and adapts each
 noisy image individually. If clean ground truth is available, PSNR/SSIM
 are computed and saved to a CSV.
 
-Canonical defaults mirror G7_CANON from the paper evaluation pipeline.
+Canonical defaults from the paper evaluation pipeline.
 
 Usage:
     # Q1 Mayo abdomen CT (Gaussian sigma=0.10)
@@ -336,7 +336,7 @@ def load_model(
 ) -> DeFT:
     """Build a DeFT model from a pretrained backbone checkpoint.
 
-    Canonical default arguments mirror G7_CANON from the paper.
+    Canonical default arguments from the paper.
     """
 
     # Detect input channels from checkpoint
@@ -392,15 +392,15 @@ def load_model(
 
 
 DATASET_ALIASES = {
-    "Q0_mayo_eval_S10":  "Mayo abdomen CT, Gaussian sigma=0.10",
-    "Q1_mayo_eval_S06":  "Mayo abdomen CT, Gaussian sigma=0.06",
-    "Q1_mayo_eval_S20":  "Mayo abdomen CT, Gaussian sigma=0.20",
-    "Q3_fastmri_eval_R03": "fastMRI knee MRI, Rician sigma=0.03",
-    "Q3_fastmri_eval_R07": "fastMRI knee MRI, Rician sigma=0.07",
-    "Q3_fastmri_eval_R15": "fastMRI knee MRI, Rician sigma=0.15",
-    "Q2_xray_eval_S06":   "Chest X-ray, Gaussian sigma=0.06",
-    "Q2_xray_eval_S10":   "Chest X-ray, Gaussian sigma=0.10",
-    "Q2_xray_eval_S20":   "Chest X-ray, Gaussian sigma=0.20",
+    "Q0_mayo_eval_S10":  "Q1 Mayo abdomen CT, Gaussian sigma=0.10",
+    "Q1_mayo_eval_S06":  "Q1 Mayo abdomen CT, Gaussian sigma=0.06",
+    "Q1_mayo_eval_S20":  "Q1 Mayo abdomen CT, Gaussian sigma=0.20",
+    "Q3_fastmri_eval_R03": "Q2 fastMRI knee MRI, Rician sigma=0.03",
+    "Q3_fastmri_eval_R07": "Q2 fastMRI knee MRI, Rician sigma=0.07",
+    "Q3_fastmri_eval_R15": "Q2 fastMRI knee MRI, Rician sigma=0.15",
+    "Q2_xray_eval_S06":   "Q3 Chest X-ray, Gaussian sigma=0.06",
+    "Q2_xray_eval_S10":   "Q3 Chest X-ray, Gaussian sigma=0.10",
+    "Q2_xray_eval_S20":   "Q3 Chest X-ray, Gaussian sigma=0.20",
 }
 
 
@@ -420,7 +420,7 @@ Dataset aliases (used for logging only; --q-dataset-dir determines actual data):
   Q2 (fastMRI knee MRI):   Q3_fastmri_eval_R03 Q3_fastmri_eval_R07 Q3_fastmri_eval_R15
   Q3 (Chest X-ray):        Q2_xray_eval_S06   Q2_xray_eval_S10   Q2_xray_eval_S20
 
-Canonical G7_CANON defaults:
+Canonical defaults:
   --steps 5 --lr 2e-4 --adapter prm_prompt --prm-mode hybrid
   --spatial-gate --preserve struct --aggressive hetero --struct-source
   --hard-route --hard-grid 4 --hard-topk 2
@@ -522,7 +522,7 @@ def main():
     output_path = Path(args.output)
 
     print("=" * 72)
-    print("DeFT Evaluation — Canonical G7_CANON defaults")
+    print("DeFT Evaluation — Canonical defaults")
     print("=" * 72)
     print(f"  Dataset:   {args.dataset or args.q_dataset_dir}")
     print(f"  Checkpoint:{args.checkpoint}")

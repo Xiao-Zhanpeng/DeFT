@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![PyTorch 2.4](https://img.shields.io/badge/PyTorch-2.4-ee4c2c.svg)](https://pytorch.org/)
+[![PyTorch 2.0+](https://img.shields.io/badge/PyTorch-2.0%2B-ee4c2c.svg)](https://pytorch.org/)
 [![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97-HuggingFace-orange.svg)](https://huggingface.co/Lockbro/deft-checkpoints)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Xiao-Zhanpeng/DeFT/blob/main/demo.ipynb)
 <!-- [![arXiv](https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b.svg)](https://arxiv.org/abs/XXXX.XXXXX) -->
@@ -64,7 +64,7 @@ pip install gdown && gdown --id 372932474 -O checkpoints/unet_source_checkpoint.
 pip install huggingface_hub && huggingface-cli download Lockbro/deft-checkpoints unet_source_checkpoint.pt --local-dir checkpoints/
 
 # Step 3: Run DeFT on a sample image
-python demo.py --input examples/q1_mayo_ct_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
+python demo.py --input examples/q1_noisy.npy --checkpoint checkpoints/unet_source_checkpoint.pt --output denoised.npy
 ```
 
 Example images for Q1/Q2/Q3 are provided in the `examples/` directory. See below for per-domain demo commands.
@@ -153,7 +153,7 @@ deft-open-source/
 ### Training (source-domain pretraining)
 
 ```bash
-python scripts/train_deft.py --config configs/pretrain.yaml
+python scripts/train_deft.py --data-root data/P_train --output-dir checkpoints
 ```
 
 | Parameter | Value |

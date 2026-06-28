@@ -14,5 +14,8 @@ setup(
         "scikit-image>=0.20.0",
         "monai>=1.3.0",
         "tqdm>=4.64.0",
+        "matplotlib>=3.5.0",
+        "pandas>=1.4.0",
+        "imageio>=2.25.0",
     ],
 )

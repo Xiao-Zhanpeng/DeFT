@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 .DS_Store
 .nfs*
+.ipynb_checkpoints/
 AGENTS.md
 PROGRESS.md
 deft/conditioning.py

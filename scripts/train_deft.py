@@ -16,7 +16,7 @@ The trained checkpoint is then used by eval_deft.py for test-time adaptation.
 
 ----------------------------------------------------------------------------
 NOTE: This script is a reference template. For the full training pipeline
-used in the paper, see ~/ttt/code/scripts/train/train_G_unified.py
+used in the paper, see the project training scripts.
 ----------------------------------------------------------------------------
 """
 
@@ -420,7 +420,7 @@ def main():
     print("=" * 72)
     print()
     print("NOTE: This script is a reference template. For the full training")
-    print("pipeline used in the paper, see ~/ttt/code/scripts/train/train_G_unified.py")
+    print("pipeline used in the paper, see the project training scripts.")
     print()
 
     torch.backends.cudnn.benchmark = True

@@ -129,7 +129,7 @@ class DeFT(nn.Module):
     DCS (descriptor-conditioned scheduler).
     """
 
-    def __init__(  # Canonical DeFT defaults (matching G7_CANON from serial_full_eval.sh:33-42)
+    def __init__(  # Canonical DeFT defaults
         self,
         denoiser: nn.Module,
         # --- Adapter architecture ---
