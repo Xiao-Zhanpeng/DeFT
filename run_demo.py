@@ -101,11 +101,10 @@ def main():
             noisy_t = noisy_t.unsqueeze(0)
 
         print(f"[run_demo] Adapting {s['label']} ...")
-        pbar = tqdm(total=5, desc=f"  {s['label'].split('(')[0].strip()}", unit="step")
+        pbar = tqdm(total=10, desc=f"  {s['label'].split('(')[0].strip()}", unit="step")
         def _tick(step, bar=pbar):
             if step == 0 and bar.total != model._actual_steps:
-                bar.total = model._actual_steps
-                bar.refresh()
+                bar.reset(total=model._actual_steps)
             bar.update(1)
         denoised_t = model.adapt(noisy_t, steps=5, callback=_tick)
         pbar.close()
