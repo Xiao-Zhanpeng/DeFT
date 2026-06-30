@@ -219,7 +219,7 @@ $\mathcal{Q}_1$ Mayo abdomen CT ($\sigma{=}0.10$), $\mathcal{Q}_2$ fastMRI knee 
 | LAN | 28.07 / 0.6398 | 28.49 / <u>0.7658</u> | 22.39 / 0.8311 |
 | **DeFT (Ours)** | **32.56** / **0.7841** | **29.38** / **0.7712** | **31.82** / **0.8535** |
 
-> Full results including PSNR / RMSE / SSIM with standard deviations across 9 target configurations ($\mathcal{Q}_1{\times}3\sigma$, $\mathcal{Q}_2{\times}3\sigma$, $\mathcal{Q}_3{\times}3\sigma$) are available in the manuscript.
+> Full results including PSNR / RMSE / SSIM with standard deviations across 3 representative configurations × 3 noise levels ($\mathcal{Q}_1{\times}3\sigma$, $\mathcal{Q}_2{\times}3\sigma$, $\mathcal{Q}_3{\times}3\sigma$) are available in the manuscript.
 
 ---
 

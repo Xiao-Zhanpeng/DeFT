@@ -20,7 +20,7 @@ def compute_adaptive_budget(
 ) -> Tuple[int, float]:
     """Compute per-image adaptation budget from estimated noise level.
 
-    Two effective tiers calibrated from the source-domain noise range:
+    Two effective tiers derived from the source-domain noise range:
       σ_mad < 0.05  →  conservative (K=3, η=1e-4)
       σ_mad ≥ 0.05  →  full adaptation (K=10, η=2e-4)
 

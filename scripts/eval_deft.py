@@ -388,6 +388,11 @@ def load_model(
 
 # ============================================================
 # Dataset alias lookup
+# Internal directory names (Q0/Q1/Q2/Q3) follow legacy experiment order.
+# The paper re-maps these for narrative clarity:
+#   internal Q0/Q1 → paper Q1 (Mayo CT)
+#   internal Q3     → paper Q2 (fastMRI knee)
+#   internal Q2     → paper Q3 (Chest X-ray)
 # ============================================================
 
 

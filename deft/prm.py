@@ -74,7 +74,7 @@ class PromptBank(nn.Module):
         # Use small non-zero init so different descriptor values produce
         # distinguishable logits from step 0.  zeros_ made softmax collapse
         # to uniform mixture regardless of the input (within-bank diff == 0),
-        # rendering E2 ablations meaningless.
+        # rendering cross-experiment ablation comparisons meaningless.
         # std=0.1 gives visible weight spread (~0.23-0.29 vs 0.25 uniform) at
         # step 0 while keeping the mixture nearly uniform enough not to
         # destabilize the identity-preserving FiLM init downstream.

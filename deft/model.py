@@ -1190,12 +1190,20 @@ class DeFT(nn.Module):
         noise_level = self._estimate_noise_level(noisy)
         self._estimated_noise = noise_level
 
-        # DCI: FiLM confidence suppression on far-OOD domains
+        # DCI: FiLM confidence suppression on far-OOD domains.
+        # The soft-gating parameters (0.005, 0.003) were chosen empirically
+        # from the source-domain MAD noise estimate distribution so that
+        # near-source images receive full FiLM modulation while far-OOD
+        # noise levels progressively suppress it.
         cf = float(torch.sigmoid(torch.tensor((noise_level - 0.005) / 0.003)))
         for m in self.denoiser.modules():
             if hasattr(m, 'film_confidence'):
                 m.film_confidence = cf
 
+        # DCI: scale PRM aggressive route initialization by descriptor.
+        # The sigmoid midpoint (0.015) and slope (0.005) were chosen so that
+        # the route starts near-identity for very low noise and activates
+        # progressively for higher noise levels.
         if self.descriptor_init_scale:
             g = torch.sigmoid(torch.tensor((noise_level - 0.015) / 0.005)).item()
             for w in self._iter_prm_wrappers():
